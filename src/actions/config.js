@@ -1,6 +1,9 @@
 import {createSlice} from "@reduxjs/toolkit";
 import socket from "./socket";
 import {toast} from "react-toastify";
+import store from "../store";
+import {hideModal} from "./config-modal";
+import {updateHostnameStb} from "./ssh-stb";
 
 export const ActivePool = {
   zergpool: 'zergpool',
@@ -45,6 +48,25 @@ const slice = createSlice({
         payload
       })
     },
+    submitSettingAndApply: (state, action) => {
+      state.submitting = true
+      const { payload } = action
+      console.log(payload)
+      socket.emit('web-client-send', {
+        action: 'CHANGE & APPLY CONFIG',
+        payload
+      })
+    },
+    submitSetHostname: (state, action) => {
+      state.submitting = true
+      const { id, hostname } = action.payload
+      socket.emit('web-client-send', {
+        action: 'SET HOSTNAME',
+        payload: {
+          id, hostname
+        }
+      })
+    },
     loadSetting: (state) => {
       socket.emit('web-client-send', {
         action: 'LOAD SETTING',
@@ -83,6 +105,6 @@ const slice = createSlice({
   }
 })
 
-export const { saveSettingFromServer, loadSetting, submitSetting, clearMessage, submitDone } = slice.actions
+export const { saveSettingFromServer, loadSetting, submitSetting, clearMessage, submitDone, submitSettingAndApply, submitSetHostname } = slice.actions
 
 export default slice.reducer

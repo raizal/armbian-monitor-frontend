@@ -26,6 +26,30 @@ export const slice = createSlice({
   }
 })
 
-export const { showModal, hideModal, setShowModal } = slice.actions
+const initialStateHostnameThreadModal = {
+  value: null,
+  showing: null,
+  id: null
+}
 
-export default slice.reducer
+export const sliceThreadModal = createSlice({
+  name: 'config-modal',
+  initialState: initialStateHostnameThreadModal,
+  reducers: {
+    showModal: (state, action) => {
+      const { type, value, id } = action.payload
+      state.showing = type
+      state.value = value
+      state.id = id
+    },
+    hideModal: state => {
+      state.value = null
+      state.id = null
+      state.showing = null
+    }
+  }
+})
+
+export const { showModal, hideModal } = sliceThreadModal.actions
+
+export default sliceThreadModal.reducer

@@ -12,8 +12,6 @@ const defaultProps = {
   name: 'hostname',
   mac: 'xx:xx:xx:xx:xx',
   temp: 72,
-  storageSpace: '20MB',
-  isEmmc: true
 }
 
 const CardSTB = (props) => {
@@ -126,38 +124,6 @@ const CardSTB = (props) => {
                   </div>
                 </div>
               ))}
-              <div className="w-full px-4">
-                <div className="relative w-full mb-3">
-                  <label
-                    className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                    htmlFor="grid-password"
-                  >
-                    Node
-                  </label>
-                  <input
-                    type="text"
-                    className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    value={nodeStatus}
-                    readOnly
-                  />
-                </div>
-              </div>
-              <div className="w-full px-4">
-                <div className="relative w-full mb-3">
-                  <label
-                    className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                    htmlFor="grid-password"
-                  >
-                    PM2
-                  </label>
-                  <input
-                    type="text"
-                    className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    value={pm2Status}
-                    readOnly
-                  />
-                </div>
-              </div>
               <div className="w-full px-4">
                 <div className="relative w-full mb-3">
                   <label

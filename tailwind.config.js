@@ -1,8 +1,7 @@
 const plugin = require("tailwindcss/plugin");
 const colors = require("tailwindcss/colors");
-const withAnimations = require('animated-tailwindcss');
 
-module.exports = withAnimations({
+module.exports = {
   purge: {
     enabled: true,
     content: [
@@ -27,6 +26,15 @@ module.exports = withAnimations({
       ...colors,
     },
     extend: {
+      animation: {
+        fade: 'fadeOut 0.5s ease-in-out',
+      },
+      keyframes: theme => ({
+        fadeOut: {
+          '0%': { backgroundColor: theme('colors.red.300') },
+          '100%': { backgroundColor: theme('colors.transparent') },
+        },
+      }),
       minHeight: {
         "screen-75": "75vh",
       },
@@ -146,4 +154,4 @@ module.exports = withAnimations({
       ]);
     }),
   ],
-});
+};

@@ -5,7 +5,7 @@ import {addStb, installLog, installPm2Done, setScanningStatus, sortResult, updat
 import {saveSettingFromServer, submitDone} from "./config";
 import {hideModal} from "./config-modal";
 
-const socket = io();
+const socket = io(':80');
 
 socket.on("connect", () => {
   console.log(socket.id);
@@ -13,7 +13,6 @@ socket.on("connect", () => {
 });
 
 socket.on('web-client-receive', (message) => {
-  console.log(message)
 
   const {action} = message
   switch (action) {

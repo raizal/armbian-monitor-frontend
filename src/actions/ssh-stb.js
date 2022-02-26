@@ -13,6 +13,15 @@ export const sshStbSlice = createSlice({
   name: 'ssh-stb',
   initialState,
   reducers: {
+    refreshList: (state) => {
+      while(state.list.length > 0) {
+        state.list.pop();
+      }
+      socket.emit('web-client-send', {
+        action: 'REFRESH',
+        payload: {}
+      })
+    },
     updateData: (state, action) => {
       while(state.list.length > 0) {
         state.list.pop();
@@ -24,9 +33,8 @@ export const sshStbSlice = createSlice({
       //   state.list.pop();
       // }
       // state.list.push(...(action.payload || []))
-      console.log('UPDATE SINGLE : ', action)
       const stb = action.payload
-      const index = state.list.map(item => item._id).indexOf(stb._id)
+      const index = state.list.findIndex(item => item._id === stb._id)
       if (index >= 0) {
         state.list[index] = {
           ...state.list[index],
@@ -51,6 +59,15 @@ export const sshStbSlice = createSlice({
         state.list.push(action.payload)
       }
     },
+    removeStb: (state, action) => {
+      const {
+        id
+      } = action.payload
+      const index = state.list.findIndex(item => item._id === id)
+      if (index >= 0) {
+        state.list.splice(index, 1)
+      }
+    },
     setScanningStatus: (state, action) => {
       state.scanning = action.payload
     },
@@ -59,6 +76,7 @@ export const sshStbSlice = createSlice({
         if (a && b) return ('' + a.hostname).localeCompare(b.hostname)
         return 0
       })
+      // console.log(state.list.map(stb => stb._id))
     },
     installPm2: (state, action) => {
       const { id } = action.payload
@@ -97,6 +115,15 @@ export const sshStbSlice = createSlice({
         }
       })
     },
+    installCCMinerMulti: (state, action) => {
+      const { ids } = action.payload
+      socket.emit('web-client-send', {
+        action: 'SETUP CCMINER',
+        payload: {
+          ids
+        }
+      })
+    },
     restartStb: (state, action) => {
       const { id } = action.payload
       socket.emit('web-client-send', {
@@ -106,9 +133,27 @@ export const sshStbSlice = createSlice({
         }
       })
     },
+    restartMultiStb: (state, action) => {
+      const { ids } = action.payload
+      socket.emit('web-client-send', {
+        action: 'RESTART',
+        payload: {
+          ids
+        }
+      })
+    },
+    stopMiningMulti: (state, action) => {
+      const { ids } = action.payload
+      socket.emit('web-client-send', {
+        action: 'STOP MINER',
+        payload: {
+          ids
+        }
+      })
+    },
   }
 })
 
-export const { sshScan, addStb, setScanningStatus, sortResult, updateData, updateSingle, installPm2, installPm2Done, installLog, installCCMiner, restartStb } = sshStbSlice.actions
+export const { refreshList, sshScan, addStb, setScanningStatus, sortResult, updateData, updateSingle, removeStb, installPm2Done, installLog, installCCMiner, restartStb, restartMultiStb, installCCMinerMulti, stopMiningMulti } = sshStbSlice.actions
 
 export default sshStbSlice.reducer

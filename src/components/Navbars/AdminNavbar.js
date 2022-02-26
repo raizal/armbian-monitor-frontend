@@ -51,21 +51,6 @@ export default function Navbar() {
               {/*</li>*/}
               <li className="nav-item">
                 <a
-                  className={`${scanning ? 'opacity-50' : ''} text-white  px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug hover:opacity-75`}
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    if (!scanning) {
-                      dispatch(sshScan())
-                      setMenuOpen(false)
-                    }
-                  }}
-                >
-                  Scans
-                </a>
-              </li>
-              <li className="nav-item">
-                <a
                   className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
                   href="#"
                   onClick={(e) => {

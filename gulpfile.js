@@ -2,6 +2,13 @@ const gulp = require('gulp');
 const inlinesource = require('gulp-inline-source');
 const replace = require('gulp-replace');
 
+const dist = '../backend/client'
+
+gulp.task('icons', function() {
+  return gulp.src('node_modules/@fortawesome/fontawesome-free/webfonts/*')
+    .pipe(gulp.dest(dist+'/assets/webfonts/'));
+});
+
 gulp.task('default', () => {
   return gulp
     .src('./build/*.html')
@@ -13,5 +20,5 @@ gulp.task('default', () => {
         ignore: ['png'],
       })
     )
-    .pipe(gulp.dest('../backend/client'));
+    .pipe(gulp.dest(dist));
 });
