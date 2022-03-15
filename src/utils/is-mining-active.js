@@ -2,9 +2,13 @@ import moment from "moment";
 
 const INACTIVE_SECS = 150
 
-export default (lastUpdate) => {
+export const isHashrateValid = (lastUpdate) => {
   const lastUpdateLocal = lastUpdate && moment(moment.utc(lastUpdate)).local()
   return lastUpdateLocal && Math.abs(lastUpdateLocal.diff(moment(), "s")) < INACTIVE_SECS
+}
+
+export default (stb) => {
+  return stb && stb.ccminerStatus === 'RUNNING'
 }
 
 export const isSTBConnected = (lastRequest) => {

@@ -7,8 +7,8 @@ import CardTable from "../../components/Cards/CardTable";
 import CardTableRow from "../../components/Cards/CardTableRow";
 import CardStats from "../../components/Cards/CardStats";
 import _ from 'lodash'
-import isMiningActive, {isSTBConnected} from "../../utils/is-mining-active";
-import {installCCMinerMulti, sshScan, stopMiningMulti} from "../../actions/ssh-stb";
+import isMiningActive, {isHashrateValid, isSTBConnected} from "../../utils/is-mining-active";
+import {installCCMinerMulti, rebootMulti, shutdownMulti, sshScan, stopMiningMulti} from "../../actions/ssh-stb";
 
 export default function Dashboard() {
   const dispatch = useDispatch()
@@ -40,7 +40,7 @@ export default function Dashboard() {
   );
 
   const shownList = useMemo(() => list.filter(stb => {
-    const miningActive = isMiningActive(stb.lastUpdate)
+    const miningActive = isMiningActive(stb)
     const reachable = isSTBConnected(stb.lastRequest)
     let shouldGet = true
 
@@ -65,7 +65,7 @@ export default function Dashboard() {
   }).length, [shownList])
 
   const idleStb = useMemo(() => shownList.filter(stb => {
-    const miningActive = isMiningActive(stb.lastUpdate)
+    const miningActive = isMiningActive(stb)
     const reachable = isSTBConnected(stb.lastRequest)
 
     return !miningActive && reachable
@@ -73,7 +73,7 @@ export default function Dashboard() {
   // const groups = groupingIds(list.map(item => item._id))
   // console.log({ groups })
 
-  const hashrateList = useMemo(() => shownList.map(stb => stb.hashrate === 'n/a' || !isMiningActive(stb.lastUpdate) ? 0 : parseInt(stb.hashrate.split(' ')[0])), [shownList])
+  const hashrateList = useMemo(() => shownList.map(stb => stb.hashrate === 'n/a' || !isMiningActive(stb) || !isHashrateValid(stb.lastUpdate) ? 0 : parseInt(stb.hashrate.split(' ')[0])), [shownList])
 
   const totalHashrate = useMemo(() => hashrateList.reduce((a, b) => a+b, 0) / 1000, [hashrateList])
   const averageHashrate = useMemo(() => totalHashrate / (shownList.length - deadStb) * 1000 || 0, [deadStb, shownList, totalHashrate])
@@ -161,6 +161,32 @@ export default function Dashboard() {
               minHeight: '32px'
             }}
             onClick={() => {
+              dispatch(rebootMulti({
+                ids: list.map(stb => stb._id)
+              }))
+            }}
+            className="text-lightBlue-500 bg-transparent border border-solid border-lightBlue-500 hover:bg-lightBlue-500 hover:text-white active:bg-lightBlue-600 font-bold uppercase text-xs px-2 rounded outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
+            type="button">
+            Reboot All
+          </button>
+          <button
+            style={{
+              minHeight: '32px'
+            }}
+            onClick={() => {
+              dispatch(shutdownMulti({
+                ids: list.map(stb => stb._id)
+              }))
+            }}
+            className="text-lightBlue-500 bg-transparent border border-solid border-lightBlue-500 hover:bg-lightBlue-500 hover:text-white active:bg-lightBlue-600 font-bold uppercase text-xs px-2 rounded outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
+            type="button">
+            Shutdown All
+          </button>
+          <button
+            style={{
+              minHeight: '32px'
+            }}
+            onClick={() => {
               dispatch(installCCMinerMulti({
                 ids: list.map(stb => stb._id)
               }))
@@ -183,11 +209,11 @@ export default function Dashboard() {
       </div>
       <div className="w-full mb-2 flex md:flex-row flex-col">
         <div className="xl:w-3/12 md:w-4/12 w-full mb-2 mt-2" style={{ alignSelf: 'center' }}>
-          <select onChange={statusFilterChange} className="font-normal leading-normal mt-0 w-full text-lightBlue-800 border-blueGray-200" style={{ fontSize: '0.7em' }}>
-            <option value="all" selected={status === 'all'}>Semua</option>
-            <option value="running" selected={status === 'running'}>Running</option>
-            <option value="idle" selected={status === 'idle'}>Idle</option>
-            <option value="offline" selected={status === 'offline'}>Offline</option>
+          <select onChange={statusFilterChange} className="font-normal leading-normal mt-0 w-full text-lightBlue-800 border-blueGray-200">
+            <option value="all" className="font-normal leading-normal" selected={status === 'all'}>Semua</option>
+            <option value="running" className="font-normal leading-normal" selected={status === 'running'}>Running</option>
+            <option value="idle" className="font-normal leading-normal" selected={status === 'idle'}>Idle</option>
+            <option value="offline" className="font-normal leading-normal" selected={status === 'offline'}>Offline</option>
           </select>
         </div>
         <div className="xs:hidden flex-1"></div>

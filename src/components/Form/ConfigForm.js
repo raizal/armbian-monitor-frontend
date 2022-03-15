@@ -59,6 +59,7 @@ const ConfigForm = () => {
         break
       case 'algo':
         setAlgo(value)
+        break
       case 'password':
         setPassword(value)
         break

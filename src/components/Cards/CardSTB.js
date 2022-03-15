@@ -56,16 +56,15 @@ const CardSTB = (props) => {
               <h3 className="font-semibold text-base mb-1">
                 {name}
               </h3>
-              <label className="font-light text-base" style={{fontSize: 14}}>
+              <label className="font-light text-base">
                 {ip}<br/>{(netDev || []).join(', ')}
               </label>
             </div>
             <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
-              <h3 className="font-semibold text-xs text-base" style={{fontSize: 15}}>
+              <h3 className="font-semibold text-xs text-base">
                 {hashrate}
               </h3>
-              <label className={`font-light text-xs text-base font-bold ${temp >= 60 ? 'text-red-500' : ''}`}
-                     style={{fontSize: 14}}>
+              <label className={`font-light text-xs text-base font-bold ${temp >= 60 ? 'text-red-500' : ''}`}>
                 {temp}°C
               </label>
             </div>
@@ -74,8 +73,8 @@ const CardSTB = (props) => {
         <div
           className={`block w-full overflow-x-auto ${lastUpdate ? `bg-blueGray-600` : 'bg-red-700'} text-white uppercase text-center`}>
           {lastUpdate ?
-            <label style={{fontSize: 10}}>Last Update: {moment(lastUpdate).format("HH:mm:ss")}</label>
-            : <label style={{fontSize: 10}}>OFFLINE</label>
+            <label>Last Update: {moment(lastUpdate).format("HH:mm:ss")}</label>
+            : <label>OFFLINE</label>
           }
         </div>
         <div className="block w-full overflow-x-auto bg-white flex border-t border-solid justify-between">

@@ -4,7 +4,7 @@ import React from "react";
 import {Td, Th, Tr} from 'react-super-responsive-table';
 import moment from "moment";
 import {useDispatch, useSelector} from "react-redux";
-import {installCCMiner, restartStb} from "../../actions/ssh-stb";
+import {installCCMiner, restartStb, shutdownMulti} from "../../actions/ssh-stb";
 import isMiningActive, {isSTBConnected} from "../../utils/is-mining-active";
 import extractMinerScript from "../../utils/extract-miner-script";
 import TableDropdown from "../Dropdowns/TableDropdown";
@@ -16,11 +16,12 @@ const CardTableRow = ({
   hashrate, workerName, nodeInstalled, pm2Installed,
   ccminerInstalled, skywireInstalled, ip,
   shares, diff, lastUpdate, lastRequest, cpuLoad, ips = [],
+  ccminerStatus,
   minerScript, hideDetail = false
 }) => {
   const {logs} = useSelector(state => state.sshStb)
 
-  const miningActive = isMiningActive(lastUpdate)
+  const miningActive = isMiningActive({ ccminerStatus })
   const minerConnected = isSTBConnected(lastRequest)
 
   const dispatch = useDispatch()
@@ -31,6 +32,12 @@ const CardTableRow = ({
 
   const restartStbClick = () => {
     dispatch(restartStb({id: _id}))
+  }
+
+  const shutdownSTBClick = () => {
+    dispatch(shutdownMulti({
+      ids: [_id]
+    }))
   }
 
   const lastRequestFromNow = lastRequest === 0 ? '' : moment(lastRequest).fromNow()
@@ -54,7 +61,7 @@ const CardTableRow = ({
               className={"lg:ml-3 font-bold my-auto mx-auto"}
             >
               <i
-                className={`fas fa-circle text-${miningActive ? 'emerald' : (minerConnected ? 'orange' : 'red')}-500 mr-2`}></i>{name}
+                className={`fas fa-circle text-${miningActive && minerConnected ? 'emerald' : (minerConnected ? 'orange' : 'red')}-500 mr-2`}></i>{name}
             </label>
             {!hideDetail && <>
               <label
@@ -151,9 +158,7 @@ const CardTableRow = ({
             <button
               className="text-lightBlue-500 max-w-210-px bg-white border border-solid border-lightBlue-500 hover:bg-lightBlue-500 hover:text-white active:bg-lightBlue-600 font-bold uppercase text-xs px-2 py-2 rounded outline-none focus:outline-none ease-linear transition-all duration-150"
               type="button"
-              style={{
-                fontSize: '0.8em'
-              }}
+
               disabled={isInstalling}
               onClick={installMiner}
             >
@@ -162,9 +167,7 @@ const CardTableRow = ({
             <button
               className="text-lightBlue-500 max-w-210-px bg-white border border-solid border-lightBlue-500 hover:bg-lightBlue-500 hover:text-white active:bg-lightBlue-600 font-bold uppercase text-xs px-2 py-2 rounded outline-none focus:outline-none ease-linear transition-all duration-150"
               type="button"
-              style={{
-                fontSize: '0.8em'
-              }}
+
               onClick={restartStbClick}
             >
               <i className="fas fa-power-off"></i> Reboot
@@ -172,9 +175,15 @@ const CardTableRow = ({
             <button
               className="text-lightBlue-500 max-w-210-px bg-white border border-solid border-lightBlue-500 hover:bg-lightBlue-500 hover:text-white active:bg-lightBlue-600 font-bold uppercase text-xs px-2 py-2 rounded outline-none focus:outline-none ease-linear transition-all duration-150"
               type="button"
-              style={{
-                fontSize: '0.8em'
-              }}
+
+              onClick={shutdownSTBClick}
+            >
+              <i className="fas fa-power-off"></i> Shutdown
+            </button>
+            <button
+              className="text-lightBlue-500 max-w-210-px bg-white border border-solid border-lightBlue-500 hover:bg-lightBlue-500 hover:text-white active:bg-lightBlue-600 font-bold uppercase text-xs px-2 py-2 rounded outline-none focus:outline-none ease-linear transition-all duration-150"
+              type="button"
+
               onClick={() => {
                 dispatch(showModal({
                   type: 'threads',
@@ -195,9 +204,7 @@ const CardTableRow = ({
                   id: name
                 }))
               }}
-              style={{
-                fontSize: '0.8em'
-              }}
+
             >
               <i className="fas fa-network-wired"></i> Set Hostname
             </button>
