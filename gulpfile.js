@@ -5,8 +5,11 @@ const replace = require('gulp-replace');
 const dist = '../backend/client'
 
 gulp.task('icons', function() {
-  return gulp.src('node_modules/@fortawesome/fontawesome-free/webfonts/*')
-    .pipe(gulp.dest(dist+'/assets/webfonts/'));
+  return gulp.src([
+    'build/*',
+    'build/*/*/*'
+  ])
+    .pipe(gulp.dest(dist));
 });
 
 gulp.task('default', () => {
