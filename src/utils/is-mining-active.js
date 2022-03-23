@@ -3,7 +3,7 @@ import moment from "moment";
 const INACTIVE_SECS = 150
 
 export const isHashrateValid = (lastUpdate) => {
-  const lastUpdateLocal = lastUpdate && moment(moment.utc(lastUpdate)).local()
+  const lastUpdateLocal = lastUpdate && moment(lastUpdate)
   return lastUpdateLocal && Math.abs(lastUpdateLocal.diff(moment(), "s")) < INACTIVE_SECS
 }
 

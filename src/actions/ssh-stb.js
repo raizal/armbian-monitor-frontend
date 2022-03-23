@@ -1,12 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import socket from './socket'
+import {isArray} from "lodash";
 
 const initialState = {
   list: [],
   scanning: false,
   pm2Installing: {},
-  logs: {}
+  logs: {},
+  stbLogs: []
 }
 
 export const sshStbSlice = createSlice({
@@ -169,10 +171,31 @@ export const sshStbSlice = createSlice({
         }
       })
     },
+    getLog: (state, action) => {
+      const { id } = action.payload
+      socket.emit('web-client-send', {
+        action: 'SHOW LOG',
+        payload: {
+          id
+        }
+      })
+      return {
+        ...state,
+        stbLogs: []
+      }
+    },
+    stbLog: (state, action) => {
+      const logs = action.payload
+      console.log(logs)
+      return {
+        ...state,
+        stbLogs: isArray(logs) ? logs.sort((a, b) => a.timestamp - b.timestamp) : logs
+      }
+    },
   }
 })
 
 export const { refreshList, sshScan, addStb, setScanningStatus, sortResult, updateData, updateSingle, removeStb, installPm2Done, installLog, installCCMiner,
-  restartStb, restartMultiStb, installCCMinerMulti, stopMiningMulti, rebootMulti, shutdownMulti } = sshStbSlice.actions
+  restartStb, restartMultiStb, installCCMinerMulti, stopMiningMulti, rebootMulti, shutdownMulti, getLog, stbLog } = sshStbSlice.actions
 
 export default sshStbSlice.reducer

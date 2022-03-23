@@ -43,7 +43,7 @@ const CardTableRow = ({
   const lastRequestFromNow = lastRequest === 0 ? '' : moment(lastRequest).fromNow()
   const lastRequestFormatted = lastRequest === 0 ? 'offline' : moment(lastRequest).format("DD-MM-YYYY HH:mm:ss")
 
-  const lastUpdateFormatted = lastUpdate === 0 ? 'offline' : moment(moment.utc(lastUpdate)).local().format("DD-MM-YYYY HH:mm:ss")
+  const lastUpdateFormatted = lastUpdate === 0 ? 'offline' : moment(lastUpdate).format("DD-MM-YYYY HH:mm:ss")
 
   const isInstalling = logs && logs[name] && !logs[name].done
   // const installationStatus = pm2Installing && pm2Installing[name]?.status || null
@@ -207,6 +207,18 @@ const CardTableRow = ({
 
             >
               <i className="fas fa-network-wired"></i> Set Hostname
+            </button>
+            <button
+              className="text-lightBlue-500 max-w-210-px bg-white border border-solid border-lightBlue-500 hover:bg-lightBlue-500 hover:text-white active:bg-lightBlue-600 font-bold uppercase text-xs px-2 py-2 rounded outline-none focus:outline-none ease-linear transition-all duration-150"
+              type="button"
+              onClick={() => {
+                dispatch(showModal({
+                  type: 'logviewer',
+                  id: name
+                }))
+              }}
+            >
+              <i className="fas fa-network-wired"></i> View Log
             </button>
           </div>
         </Td>

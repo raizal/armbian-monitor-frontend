@@ -16,6 +16,7 @@ import {useDispatch} from "react-redux";
 import ConfigModal from "../components/Form/ConfigModal";
 import SetThreadModal from "../components/Form/SetThreadModal";
 import SetHostnameModal from "../components/Form/SetHostnameModal";
+import LogViewerModal from "../components/Form/LogViewerModal";
 
 export let isMobile = false
 
@@ -41,6 +42,7 @@ export default function Admin() {
       {/*<Sidebar />*/}
       <SetThreadModal/>
       <SetHostnameModal/>
+      <LogViewerModal/>
       <div className="relative bg-blueGray-100 pt-24">
         {/* Header */}
         <AdminNavbar />

@@ -1,7 +1,16 @@
 import {io} from "socket.io-client";
 
 import store from '../store'
-import {addStb, installLog, installPm2Done, setScanningStatus, sortResult, updateData, updateSingle} from './ssh-stb'
+import {
+  addStb,
+  installLog,
+  installPm2Done,
+  setScanningStatus,
+  sortResult,
+  stbLog,
+  updateData,
+  updateSingle
+} from './ssh-stb'
 import {saveSettingFromServer, submitDone} from "./config";
 import {hideModal} from "./config-modal";
 
@@ -66,6 +75,12 @@ socket.on('web-client-receive', (message) => {
       console.log(message)
       const {result} = message
       store.dispatch(installLog(result))
+    }
+      break
+    case 'SHOW LOG': {
+      console.log(message)
+      const {result} = message
+      store.dispatch(stbLog(result))
     }
       break
   }
