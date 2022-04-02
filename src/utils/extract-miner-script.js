@@ -16,20 +16,16 @@ export default (script) => {
       wallet: args.u,
       password: args.p
     }
+
+    const workerName = args.u.split('.')[1]
+
     const isZergpool = args.o.indexOf('zergpool.com') >= 0
     if (isZergpool) {
       const worker = args.p.split(',').find((text) => text?.indexOf('ID=') >= 0)
-      if (worker) {
-        result.workerName = worker.replace('ID=', '')
-      }
+      result.workerName = worker ? worker.replace('ID=', '') : workerName
     } else {
-      const worker = args.u.split('.')[1]
       if (args.o.indexOf('luckpool') >= 0) {
-        if (args.p === 'hybrid') {
-          result.workerName = `${worker}-hybrid`
-        } else {
-          result.workerName = worker
-        }
+        result.workerName = args.p === 'hybrid' ? `${workerName}-hybrid` : workerName
       }
     }
     return result

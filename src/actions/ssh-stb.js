@@ -8,7 +8,45 @@ const initialState = {
   scanning: false,
   pm2Installing: {},
   logs: {},
-  stbLogs: []
+  stbLogs: [],
+  sort: 'hostname',
+  order: 'asc'
+}
+
+const sortSTB = ({ list, sort, order }) => {
+  return list.sort((a, b) => {
+    if (a && b) {
+      let param1, param2
+      switch (sort) {
+        case 'hostname':
+          param1 = a.hostname
+          param2 = b.hostname
+          break
+        case 'speed':
+          param1 = parseFloat(a.hashrate.replace(' kH/s', '')) || 0
+          param2 = parseFloat(b.hashrate.replace(' kH/s', '')) || 0
+          break
+        case 'ip':
+          param1 = a.ips.join('; ')
+          param2 = b.ips.join('; ')
+          break
+        case 'cpu':
+          param1 = a.temp
+          param2 = b.temp
+          break
+      }
+
+      if (sort === 'cpu' || sort === 'speed') {
+        if (order === 'asc') return param1 - param2
+        return param2 - param1
+      } else {
+        if (order === 'asc') return param1.localeCompare(param2)
+        return param2.localeCompare(param1)
+      }
+
+    }
+    return 0
+  })
 }
 
 export const sshStbSlice = createSlice({
@@ -73,10 +111,17 @@ export const sshStbSlice = createSlice({
     setScanningStatus: (state, action) => {
       state.scanning = action.payload
     },
+
+    setOrder: (state, action) => {
+      state.order = action.payload
+    },
+    setSort: (state, action) => {
+      state.sort = action.payload
+    },
     sortResult: (state) => {
-      state.list = state.list.sort((a, b) => {
-        if (a && b) return ('' + a.hostname).localeCompare(b.hostname)
-        return 0
+      const { list, sort, order } = state
+      state.list = sortSTB({
+        list, sort, order
       })
       // console.log(state.list.map(stb => stb._id))
     },
@@ -196,6 +241,6 @@ export const sshStbSlice = createSlice({
 })
 
 export const { refreshList, sshScan, addStb, setScanningStatus, sortResult, updateData, updateSingle, removeStb, installPm2Done, installLog, installCCMiner,
-  restartStb, restartMultiStb, installCCMinerMulti, stopMiningMulti, rebootMulti, shutdownMulti, getLog, stbLog } = sshStbSlice.actions
+  restartStb, restartMultiStb, installCCMinerMulti, stopMiningMulti, rebootMulti, shutdownMulti, getLog, stbLog, setOrder, setSort } = sshStbSlice.actions
 
 export default sshStbSlice.reducer

@@ -15,8 +15,8 @@ const DEFAULT_TITLES = [
   " "
 ]
 
-export default function CardTable({ color, content, sort = null, order = null, onHeaderClick = () => {} }) {
-  const orderIcon = order ? <i className={`fas fa-arrow-${order === 'asc' ? 'up' : 'down'} border-blueGray-100 ml-4`}></i> : null
+export default function CardTable({ color, content, sort = 'hostname', order = 'asc', onHeaderClick = () => {} }) {
+  const orderIcon = order ? <i className={`fas fa-angle-${order === 'asc' ? 'up' : 'down'} border-blueGray-100 ml-4`}></i> : null
   return (
     <>
       <div
@@ -34,36 +34,38 @@ export default function CardTable({ color, content, sort = null, order = null, o
                   style={{
                     width: '150px'
                   }}
+                  onClick={() => onHeaderClick('hostname', order === 'asc' ? 'desc' : 'asc')}
                   className={
-                    "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-center " +
+                    "cursor-pointer px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-center " +
                     (color === "light"
                       ? "bg-blueGray-50 text-blueGray-500 border-blueGray-100"
                       : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
                   }
                 >
-                  STB
+                  STB {sort === 'hostname' && orderIcon}
                 </Th>
                 <Th
                   style={{
                     width: '200px'
                   }}
+                  onClick={() => onHeaderClick('ip', order === 'asc' ? 'desc' : 'asc')}
                   className={
-                    "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
+                    "cursor-pointer px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
                     (color === "light"
                       ? "bg-blueGray-50 text-blueGray-500 border-blueGray-100"
                       : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
                   }
                 >
-                  Net Info
+                  Net Info {sort === 'ip' && orderIcon}
                 </Th>
                 <Th
                   className={
-                    "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
+                    "cursor-pointer px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
                     (color === "light"
                       ? "bg-blueGray-50 text-blueGray-500 border-blueGray-100"
                       : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
                   }
-                  onClick={onHeaderClick}
+                  onClick={() => onHeaderClick('cpu', order === 'asc' ? 'desc' : 'asc')}
                 >
                   CPU {sort === 'cpu' && orderIcon}
                 </Th>
@@ -79,12 +81,12 @@ export default function CardTable({ color, content, sort = null, order = null, o
                 </Th>
                 <Th
                   className={
-                    "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
+                    "cursor-pointer px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
                     (color === "light"
                       ? "bg-blueGray-50 text-blueGray-500 border-blueGray-100"
                       : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
                   }
-                  onClick={onHeaderClick}
+                  onClick={() => onHeaderClick('speed', order === 'asc' ? 'desc' : 'asc')}
                 >
                   Speed  {sort === 'speed' && orderIcon}
                 </Th>

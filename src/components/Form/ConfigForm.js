@@ -17,7 +17,8 @@ const ConfigForm = () => {
     password,
     algo,
     threads,
-    workername
+    workername,
+    timezone
   } = useSelector(state => state.configGeneral)
 
   const [intervalValue, setInterval] = useState(refreshInterval)
@@ -32,7 +33,9 @@ const ConfigForm = () => {
   const [algoValue, setAlgo] = useState(algo)
   const [threadsValue, setThreads] = useState(threads)
 
-  const [workernameValue, setWorkername] = useState(workername)
+  const [timezoneValue, setTimezone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone)
+
+  const [workernameValue, setWorkername] = useState(workername || 'hostname')
 
   const minerScript = (`/root/ccminer/ccminer -a ${algoValue} -o ${serverValue} -u ${walletValue}.$workername ${password?.length > 0 ? '-p' : ''} ${passwordValue} -t ${threadsValue}`)
 
@@ -47,7 +50,8 @@ const ConfigForm = () => {
       password: passwordValue,
       algo: algoValue,
       threads: threadsValue,
-      workername: workernameValue
+      workername: workernameValue,
+      timezone: timezoneValue
     }))
   }
 
@@ -81,12 +85,9 @@ const ConfigForm = () => {
       case 'workername':
         setWorkername(value)
         break
-      // case 'usernameSsh':
-      //   setUsernameSsh(value)
-      //   break
-      // case 'passwordSsh':
-      //   setPasswordSsh(value)
-      //   break
+      case 'timezone':
+        setTimezone(value)
+        break
     }
   }
 
@@ -103,7 +104,7 @@ const ConfigForm = () => {
             General Setting
           </h6>
           <div className="flex flex-wrap">
-            <div className="w-full px-4 mb-4">
+            <div className={`w-full px-4 mb-4 ${workernameValue !== 'hostname' ? 'lg:w-6/12' : ''}`}>
               <div className="relative w-full mb-3">
                 <label
                   className="block text-blueGray-600 text-xs font-bold mb-2"
@@ -119,12 +120,51 @@ const ConfigForm = () => {
                   </label>
                   <label className="inline-flex items-center ml-6">
                     <input type="radio" className="form-radio" onChange={onChangeHandler} name="workername"
-                           value="all-for-one" checked={workernameValue === 'all-for-one'}/>
+                           value="all-for-one" checked={workernameValue !== 'hostname'}/>
                     <span className="ml-2">Single workername</span>
                   </label>
                 </div>
               </div>
             </div>
+
+            {workernameValue !== 'hostname' && <div className="w-full lg:w-6/12 px-4">
+              <div className="relative w-full mb-3">
+                <label
+                  className="block text-blueGray-600 text-xs font-bold mb-2"
+                  htmlFor="grid-password"
+                >
+                  Single Workername
+                </label>
+                <input
+                  type="text"
+                  className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                  value={workernameValue}
+                  name="workername"
+                  onChange={onChangeHandler}
+                />
+              </div>
+            </div>}
+
+            <div className="w-full lg:w-6/12 px-4">
+              <div className="relative w-full mb-3">
+                <label
+                  className="block text-blueGray-600 text-xs font-bold mb-2"
+                  htmlFor="grid-password"
+                >
+                  Timezone
+                </label>
+                <input
+                  type="text"
+                  className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                  value={timezoneValue}
+                  disabled
+                  readOnly
+                  name="timezone"
+                  onChange={onChangeHandler}
+                />
+              </div>
+            </div>
+
             <div className="w-full lg:w-6/12 px-4">
               <div className="relative w-full mb-3">
                 <label

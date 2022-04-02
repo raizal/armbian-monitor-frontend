@@ -8,11 +8,19 @@ import CardTableRow from "../../components/Cards/CardTableRow";
 import CardStats from "../../components/Cards/CardStats";
 import _ from 'lodash'
 import isMiningActive, {isHashrateValid, isSTBConnected} from "../../utils/is-mining-active";
-import {installCCMinerMulti, rebootMulti, shutdownMulti, sshScan, stopMiningMulti} from "../../actions/ssh-stb";
+import {
+  installCCMinerMulti,
+  rebootMulti,
+  setOrder, setSort,
+  shutdownMulti, sortResult,
+  sshScan,
+  stopMiningMulti
+} from "../../actions/ssh-stb";
 
 export default function Dashboard() {
   const dispatch = useDispatch()
-  const { list, scanning } = useSelector((state) => state.sshStb)
+
+  const { list, scanning, sort, order } = useSelector((state) => state.sshStb)
 
   const [status, setStatus] = useState('all')
 
@@ -24,20 +32,34 @@ export default function Dashboard() {
 
   const handleChange = (event) => {
     setPrefix(event.target.value);
-    debounce(event.target.value);
+    debounceSearch(event.target.value);
   };
 
   const statusFilterChange = (event) => {
     setStatus(event.target.value)
   }
 
-  const debounce = useCallback(
+  const debounceSearch = useCallback(
     _.debounce((_searchVal) => {
       setDebouncedState(_searchVal);
       // send the server request here
     }, 700),
     []
   );
+
+  const debounceSort = useCallback(
+    _.debounce(() => {
+      dispatch(sortResult())
+      // send the server request here
+    }, 300),
+    []
+  );
+
+  const tableHeaderClick = (_sort, _order) => {
+    if (_order !== order) dispatch(setOrder(_order))
+    if (sort !== _sort) dispatch(setSort(_sort))
+    debounceSort()
+  }
 
   const shownList = useMemo(() => list.filter(stb => {
     const miningActive = isMiningActive(stb)
@@ -148,7 +170,7 @@ export default function Dashboard() {
               minHeight: '32px'
             }}
             onClick={() => {
-              dispatch(stopMiningMulti({
+              window.confirm("Apakah Anda yakin dengan ini?") && dispatch(stopMiningMulti({
                 ids: list.map(stb => stb._id)
               }))
             }}
@@ -161,7 +183,7 @@ export default function Dashboard() {
               minHeight: '32px'
             }}
             onClick={() => {
-              dispatch(rebootMulti({
+              window.confirm("Apakah Anda yakin dengan ini?") && dispatch(rebootMulti({
                 ids: list.map(stb => stb._id)
               }))
             }}
@@ -174,7 +196,7 @@ export default function Dashboard() {
               minHeight: '32px'
             }}
             onClick={() => {
-              dispatch(shutdownMulti({
+              window.confirm("Apakah Anda yakin dengan ini?") && dispatch(shutdownMulti({
                 ids: list.map(stb => stb._id)
               }))
             }}
@@ -230,6 +252,9 @@ export default function Dashboard() {
         </div>
       </div>
       <CardTable
+        onHeaderClick={tableHeaderClick}
+        sort={sort}
+        order={order}
         content={shownList.map((stb, index) => <CardTableRow
           {...stb}
           hideDetail={!showDetail}

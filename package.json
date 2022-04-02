@@ -10,7 +10,6 @@
     "@popperjs/core": "2.9.1",
     "@reduxjs/toolkit": "^1.7.1",
     "@tailwindcss/forms": "^0.4.0-alpha.2",
-    "add": "^2.0.6",
     "autoprefixer": "^10.4.2",
     "chart.js": "2.9.4",
     "gulp": "4.0.2",
