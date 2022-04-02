@@ -31,11 +31,11 @@ const CardTableRow = ({
   }
 
   const restartStbClick = () => {
-    dispatch(restartStb({id: _id}))
+    window.confirm("Apakah Anda yakin dengan ini?") && dispatch(restartStb({id: _id}))
   }
 
   const shutdownSTBClick = () => {
-    dispatch(shutdownMulti({
+    window.confirm("Apakah Anda yakin dengan ini?") && dispatch(shutdownMulti({
       ids: [_id]
     }))
   }
