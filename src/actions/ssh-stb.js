@@ -17,14 +17,14 @@ const sortSTB = ({ list, sort, order }) => {
   return list.sort((a, b) => {
     if (a && b) {
       let param1, param2
-      switch (sort) {
-        case 'hostname':
-          param1 = a.hostname
-          param2 = b.hostname
-          break
+      switch (sort) {        
         case 'speed':
           param1 = parseFloat(a.hashrate.replace(' kH/s', '')) || 0
           param2 = parseFloat(b.hashrate.replace(' kH/s', '')) || 0
+          break
+        case 'lastUpdate':
+          param1 = new Date(a.lastRequestResponse)
+          param2 = new Date(b.lastRequestResponse)
           break
         case 'ip':
           param1 = a.ips.join('; ')
@@ -34,9 +34,14 @@ const sortSTB = ({ list, sort, order }) => {
           param1 = a.temp
           param2 = b.temp
           break
+        case 'hostname':
+        default:
+          param1 = a.hostname
+          param2 = b.hostname
+          break
       }
 
-      if (sort === 'cpu' || sort === 'speed') {
+      if (sort === 'cpu' || sort === 'speed' || sort === 'lastUpdate') {
         if (order === 'asc') return param1 - param2
         return param2 - param1
       } else {
