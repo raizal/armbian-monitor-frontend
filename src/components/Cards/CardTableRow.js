@@ -138,17 +138,17 @@ const CardTableRow = ({
               >
                 Diff: {diff} | Shares: {shares}
               </label>
-              <label
-                className="lg:w-10 pt-1 leading-normal"
-              >
-                Last Share:
-              </label>
-              <label
-                className="lg:w-10 leading-normal"
-              >
-                {lastUpdateFormatted}
-              </label>
             </>}
+          </div>
+        </Td>
+        <Td
+          className="border-t-0 px-6 w-210-px font-bold align-middle border-l-0 text-left border-r-0 text-xs whitespace-nowrap p-4">
+          <div className="flex flex-col">
+            <label
+              className={`lg:w-10 pt-2 pb-2`}
+            >
+              {lastUpdateFormatted}
+            </label>
           </div>
         </Td>
         <Td style={{width: "150px"}}

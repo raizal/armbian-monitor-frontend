@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-
+import moment from 'moment';
 import socket from './socket'
 import {isArray} from "lodash";
 
@@ -23,8 +23,8 @@ const sortSTB = ({ list, sort, order }) => {
           param2 = parseFloat(b.hashrate.replace(' kH/s', '')) || 0
           break
         case 'lastUpdate':
-          param1 = new Date(a.lastRequestResponse)
-          param2 = new Date(b.lastRequestResponse)
+          param1 = moment(a.lastUpdate)
+          param2 = moment(b.lastUpdate)
           break
         case 'ip':
           param1 = a.ips.join('; ')
