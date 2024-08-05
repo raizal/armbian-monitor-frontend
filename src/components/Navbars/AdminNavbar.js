@@ -25,8 +25,12 @@ export default function Navbar() {
               className="text-sm font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap text-white"
               href="#"
               onClick={() => {
-                history.push("/")
-                setMenuOpen(false)
+                if (history.length > 0) {
+                  history.goBack();
+                } else {
+                  history.push("/")
+                  setMenuOpen(false)
+                }
               }}
             >
               STB MINERS MONITOR (<span className="font-bold">v{packageJson.version}</span>)

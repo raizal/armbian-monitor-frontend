@@ -9,6 +9,7 @@ import isMiningActive, {isSTBConnected} from "../../utils/is-mining-active";
 import extractMinerScript from "../../utils/extract-miner-script";
 import TableDropdown from "../Dropdowns/TableDropdown";
 import {hideModal, showModal} from "../../actions/config-modal";
+import {useHistory} from "react-router-dom";
 
 const CardTableRow = ({
   color, _id,
@@ -19,6 +20,7 @@ const CardTableRow = ({
   ccminerStatus,
   minerScript, hideDetail = false
 }) => {
+  const history = useHistory();
   const {logs} = useSelector(state => state.sshStb)
 
   const miningActive = isMiningActive({ ccminerStatus })
@@ -153,7 +155,7 @@ const CardTableRow = ({
         </Td>
         <Td style={{width: "150px"}}
             className="border-t-0 px-6  align-middle border-l-0 text-left border-r-0 text-xs whitespace-nowrap p-4">
-          <div className="flex flex-col flex-wrap items-center" style={{ gap: "8px", minWidth: "150px" }}>
+          <div className="flex flex-col flex-wrap items-center" style={{gap: "8px", minWidth: "150px"}}>
             {/*<TableDropdown/>*/}
             <button
               className="text-lightBlue-500 max-w-210-px bg-white border border-solid border-lightBlue-500 hover:bg-lightBlue-500 hover:text-white active:bg-lightBlue-600 font-bold uppercase text-xs px-2 py-2 rounded outline-none focus:outline-none ease-linear transition-all duration-150"
@@ -219,6 +221,15 @@ const CardTableRow = ({
               }}
             >
               <i className="fas fa-network-wired"></i> View Log
+            </button>
+            <button
+              className="text-lightBlue-500 max-w-210-px bg-white border border-solid border-lightBlue-500 hover:bg-lightBlue-500 hover:text-white active:bg-lightBlue-600 font-bold uppercase text-xs px-2 py-2 rounded outline-none focus:outline-none ease-linear transition-all duration-150"
+              type="button"
+              onClick={() => {
+                history.push(`admin/terminal/${_id}`)
+              }}
+            >
+              <i className="fas fa-network-wired"></i> Open Terminal
             </button>
           </div>
         </Td>

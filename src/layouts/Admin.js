@@ -17,6 +17,7 @@ import ConfigModal from "../components/Form/ConfigModal";
 import SetThreadModal from "../components/Form/SetThreadModal";
 import SetHostnameModal from "../components/Form/SetHostnameModal";
 import LogViewerModal from "../components/Form/LogViewerModal";
+import STBTerminal from "../views/admin/Terminal";
 
 export let isMobile = false
 
@@ -53,7 +54,7 @@ export default function Admin() {
             {/*<Route path="/admin/maps" exact component={Maps} />*/}
             <Route path="/settings" exact component={Settings} />
             {/*<Route path="/admin/tables" exact component={Tables} />*/}
-            {/*<Route path="/admin/terminal/:id" component={STBTerminal}/>*/}
+            <Route path="/admin/terminal/:id" component={STBTerminal}/>
             {/*<Redirect from="/admin" to="/admin/dashboard" />*/}
             {/*<Redirect from="/" to="/admin/dashboard" />*/}
           </Switch>

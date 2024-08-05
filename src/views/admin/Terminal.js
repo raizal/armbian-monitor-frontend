@@ -1,29 +1,68 @@
-import React, {useState} from "react";
-import Terminal, { ColorMode, LineType } from 'react-terminal-ui';
+import React, {useCallback, useEffect, useMemo, useState} from "react";
+import Terminal, {ColorMode, TerminalInput, TerminalOutput} from 'react-terminal-ui';
 import {useSelector} from "react-redux";
+import socket from "../../actions/socket";
 
 // components
 
 export default function STBTerminal({ match }) {
-  const [terminalLineData, setTerminalLineData] = useState([
-    {type: LineType.Output, value: 'COMING SOON 🙏'},
-    {type: LineType.Input, value: 'uname -a'},
-    {type: LineType.Output, value: 'Linux stb203 5.1.0-aml-s905 #5.90 SMP PREEMPT Mon Jul 1 16:07:35 MSK 2019 aarch64 aarch64 aarch64 GNU/Linux'},
-  ]);
+  const { id } = match.params
+  const { list } = useSelector((state) => state.sshStb)
 
-  const { id, ip } = match.params
-  const { list } = useSelector(state => state.sshStb)
-  const stb = list.find(item => item.name === id)
+  const current = useMemo(() => {
+    return list.find((item) => item && item._id === id)
+  }, [list, id]);
+
+  const [terminalLineData, setTerminalLineData] = useState([]);
+
+  useEffect(() => {
+    if (!current) {
+      return;
+    }
+    const event = `terminal-${current.hostname}`;
+    socket.on(event, ({result}) => {
+      setTerminalLineData([
+        ...terminalLineData,
+        <TerminalOutput>{result}</TerminalOutput>
+      ])
+    });
+    return () => {
+      socket.off(event);
+    }
+  }, [current, terminalLineData]);
+
+  const send = useCallback((cmd) => {
+    if (!current) {
+      return;
+    }
+    if (cmd === 'clear') {
+      setTerminalLineData([]);
+      return;
+    }
+    console.log('SEND ', cmd);
+    setTerminalLineData([
+      ...terminalLineData,
+      <TerminalInput>{cmd}</TerminalInput>
+    ]);
+    socket.emit('web-client-send', {
+      action: 'CMD',
+      payload: {
+        command: cmd,
+        id: current._id,
+      }
+    })
+  }, [current, terminalLineData]);
 
   return (
     <>
       <div className="flex flex-wrap">
-        <div className="w-full px-4">
+        <div className="w-full px-4 h-[100vh]">
           <Terminal
-            name={id}
+            name={current ? current.hostname : 'connecting...'}
             colorMode={ ColorMode.Dark }
-            lineData={ terminalLineData }
-            onInput={ terminalInput => console.log(`New terminal input received: '${ terminalInput }'`) }/>
+            onInput={send}>
+            {terminalLineData}
+          </Terminal>
         </div>
       </div>
     </>
